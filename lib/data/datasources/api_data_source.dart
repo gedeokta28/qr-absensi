@@ -16,7 +16,7 @@ class ApiDataSourceImplementation implements ApiDataSource {
 
   @override
   Future<LoginResponseModel> doLogin(FormData data) async {
-    String url = 'login/apicek_login';
+    String url = 'api/login';
 
     try {
       final response = await dio.post(

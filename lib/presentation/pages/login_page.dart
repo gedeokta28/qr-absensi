@@ -76,44 +76,84 @@ class LoginPage extends StatelessWidget {
                       RoundedButton(
                           title: "Masuk",
                           event: () {
-                            final session = locator<Session>();
+                            // final session = locator<Session>();
 
+                            // if (provider.usernameController.text.isNotEmpty &&
+                            //     provider.passwordController.text.isNotEmpty) {
+                            //   if (provider.formKey.currentState!.validate()) {
+                            //     if (provider.usernameController.text ==
+                            //             '12345' &&
+                            //         provider.passwordController.text ==
+                            //             'dosen') {
+                            //       session.setLoggedIn = true;
+                            //       session.setRole = 'dosen';
+                            //       Navigator.of(context).pushNamedAndRemoveUntil(
+                            //           HomePageDosen.routeName,
+                            //           (Route<dynamic> route) => false);
+                            //       showShortToast(message: "Login Sukses");
+                            //     } else if (provider.usernameController.text ==
+                            //             '12345' &&
+                            //         provider.passwordController.text ==
+                            //             'mahasiswa') {
+                            //       session.setLoggedIn = true;
+                            //       session.setRole = 'mahasiswa';
+                            //       Navigator.of(context).pushNamedAndRemoveUntil(
+                            //           HomePageMahasiswa.routeName,
+                            //           (Route<dynamic> route) => false);
+                            //       showShortToast(message: "Login Sukses");
+                            //     } else {
+                            //       showDialog(
+                            //         context: context,
+                            //         builder: (_) => CustomSimpleDialog(
+                            //           onTap: () {
+                            //             Navigator.pop(context);
+                            //           },
+                            //           text:
+                            //               'Pastikan Username dan Password Benar !',
+                            //           color: Colors.black,
+                            //         ),
+                            //       );
+                            //     }
+                            //   }
+                            // } else {}
                             if (provider.usernameController.text.isNotEmpty &&
                                 provider.passwordController.text.isNotEmpty) {
                               if (provider.formKey.currentState!.validate()) {
-                                if (provider.usernameController.text ==
-                                        '12345' &&
-                                    provider.passwordController.text ==
-                                        'dosen') {
-                                  session.setLoggedIn = true;
-                                  session.setRole = 'dosen';
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      HomePageDosen.routeName,
-                                      (Route<dynamic> route) => false);
-                                  showShortToast(message: "Login Sukses");
-                                } else if (provider.usernameController.text ==
-                                        '12345' &&
-                                    provider.passwordController.text ==
-                                        'mahasiswa') {
-                                  session.setLoggedIn = true;
-                                  session.setRole = 'mahasiswa';
-                                  Navigator.of(context).pushNamedAndRemoveUntil(
-                                      HomePageMahasiswa.routeName,
-                                      (Route<dynamic> route) => false);
-                                  showShortToast(message: "Login Sukses");
-                                } else {
-                                  showDialog(
-                                    context: context,
-                                    builder: (_) => CustomSimpleDialog(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      text:
-                                          'Pastikan Username dan Password Benar !',
-                                      color: Colors.black,
-                                    ),
-                                  );
-                                }
+                                provider.doLoginApi().listen((state) async {
+                                  switch (state.runtimeType) {
+                                    case LoginFailure:
+                                      showDialog(
+                                        context: context,
+                                        builder: (_) => CustomSimpleDialog(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          text:
+                                              'Pastikan Username dan Password Benar !',
+                                          color: Colors.black,
+                                        ),
+                                      );
+                                      break;
+                                    case LoginSuccess:
+                                      final result =
+                                          (state as LoginSuccess).data;
+                                      if (result.role == 'siswa') {
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                                HomePageMahasiswa.routeName,
+                                                (Route<dynamic> route) =>
+                                                    false);
+                                      } else {
+                                        Navigator.of(context)
+                                            .pushNamedAndRemoveUntil(
+                                                HomePageDosen.routeName,
+                                                (Route<dynamic> route) =>
+                                                    false);
+                                      }
+                                      showShortToast(message: "Login Sukses");
+                                      break;
+                                  }
+                                });
                               }
                             } else {}
                           }),

@@ -8,16 +8,21 @@ String loginResponseModelToJson(LoginResponseModel data) =>
 
 class LoginResponseModel {
   LoginResponseModel({
-    this.data,
     required this.status,
+    required this.role,
+    required this.data,
   });
 
-  LoginData? data;
-  final String status;
+  final String? status;
+  final String? role;
+  final LoginData? data;
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
       LoginResponseModel(
-          data: json["user"] != null ? LoginData.fromJson(json["user"]) : null,
+          data: json["data"] != null
+              ? LoginData.fromJson(json["data"], json["role"])
+              : null,
+          role: json["role"],
           status: json["status"]);
 
   Map<String, dynamic> toJson() => {
@@ -29,23 +34,33 @@ class LoginResponseModel {
 class LoginData {
   LoginData({
     required this.id,
-    required this.fullname,
-    required this.username,
+    required this.userId,
+    required this.nama,
+    required this.noHp,
   });
 
   final String id;
-  final String fullname;
-  final String username;
+  final String userId;
+  final String nama;
+  final String noHp;
 
-  factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
-        id: json["id"],
-        fullname: json["fullname"],
-        username: json["username"],
+  factory LoginData.fromJson(Map<String, dynamic> json, String role) {
+    if (role == 'siswa') {
+      return LoginData(
+        id: json["id_siswa"],
+        userId: json["nis"],
+        nama: json["nama_siswa"],
+        noHp: json["no_hp"],
       );
+    } else {
+      return LoginData(
+        id: json["id_guru"],
+        userId: json["nuptk"],
+        nama: json["nama_guru"],
+        noHp: json["no_hp"],
+      );
+    }
+  }
 
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "fullname": fullname,
-        "username": username,
-      };
+  Map<String, dynamic> toJson() => {};
 }

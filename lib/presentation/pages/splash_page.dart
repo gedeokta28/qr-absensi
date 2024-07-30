@@ -20,10 +20,10 @@ class _SplashPageState extends State<SplashPage> {
     final session = locator<Session>();
 
     Future.delayed(const Duration(seconds: 2), () async {
-      if (session.isLoggedIn && session.sessionRole == 'dosen') {
-        Navigator.pushReplacementNamed(context, HomePageDosen.routeName);
-      } else if (session.isLoggedIn && session.sessionRole == 'mahasiswa') {
+      if (session.isLoggedIn && session.sessionRole == 'siswa') {
         Navigator.pushReplacementNamed(context, HomePageMahasiswa.routeName);
+      } else if (session.isLoggedIn && session.sessionRole == 'guru') {
+        Navigator.pushReplacementNamed(context, HomePageDosen.routeName);
       } else {
         Navigator.pushReplacementNamed(context, LoginPage.routeName);
       }

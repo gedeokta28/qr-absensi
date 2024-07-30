@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:qr_absensi/domain/usecases/do_login.dart';
 import 'package:qr_absensi/presentation/providers/form_provider.dart';
 import 'package:qr_absensi/presentation/state/login_state.dart';
@@ -16,10 +17,8 @@ class LoginProvider extends FormProvider {
   Stream<LoginState> doLoginApi() async* {
     showLoading();
     yield LoginLoading();
-    FormData formData = FormData.fromMap({
-      'username': usernameController.text,
-      'password': passwordController.text
-    });
+    FormData formData = FormData.fromMap(
+        {'id': usernameController.text, 'password': passwordController.text});
 
     final loginResult = await doLogin.call(formData);
     yield* loginResult.fold((failure) async* {
@@ -31,9 +30,10 @@ class LoginProvider extends FormProvider {
         yield LoginFailure(failure: const ServerFailure());
       } else {
         session.setLoggedIn = true;
-        session.setId = result.data!.id;
-        session.setUsername = result.data!.username;
-        session.setFullname = result.data!.fullname;
+        session.setRole = result.role!;
+        // session.setId = result.data!.id;
+        // session.setUsername = result.data!.username;
+        // session.setFullname = result.data!.fullname;
         dismissLoading();
         yield LoginSuccess(data: result);
       }
