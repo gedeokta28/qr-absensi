@@ -1,9 +1,13 @@
 import 'dart:math';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:qr_absensi/domain/usecases/do_fetch_qr.dart';
 import 'package:qr_absensi/domain/usecases/do_login.dart';
 import 'package:qr_absensi/domain/usecases/do_update_password.dart';
+import 'package:qr_absensi/presentation/pages/show_qrcode_page.dart';
 import 'package:qr_absensi/presentation/providers/form_provider.dart';
+import 'package:qr_absensi/presentation/state/fetch_qr_state.dart';
 import 'package:qr_absensi/presentation/state/login_state.dart';
 import 'package:qr_absensi/presentation/state/update_password_state.dart';
 import 'package:qr_absensi/utility/failures.dart';
@@ -12,10 +16,13 @@ import 'package:qr_absensi/utility/injection.dart';
 import 'package:qr_absensi/utility/session_helper.dart';
 
 class HomeProvider extends FormProvider {
-  final DoLogin doLogin;
   final DoUpdatePassword doUpdatePassword;
+  final DoQrcode doQrcode;
 
-  HomeProvider({required this.doUpdatePassword, required this.doLogin});
+  HomeProvider({
+    required this.doUpdatePassword,
+    required this.doQrcode,
+  });
 
   String _qrCode = '';
   bool _isShowQR = false;
@@ -37,23 +44,25 @@ class HomeProvider extends FormProvider {
         .join();
   }
 
-  Stream<LoginState> doLoginApi() async* {
+  Stream<FetchQRState> fetchQRCode(BuildContext context) async* {
+    final session = locator<Session>();
     showLoading();
-    yield LoginLoading();
-    FormData formData =
-        FormData.fromMap({'username': 'admin', 'password': 'admin'});
+    yield FetchQRLoading();
+    FormData formData = FormData.fromMap({'id': session.sessionId});
 
-    final loginResult = await doLogin.call(formData);
-    yield* loginResult.fold((failure) async* {
+    final result = await doQrcode.call(formData);
+    yield* result.fold((failure) async* {
       dismissLoading();
-      yield LoginFailure(failure: ServerFailure(message: failure.message));
+      yield FetchQRFailure(failure: ServerFailure(message: failure.message));
     }, (result) async* {
       if (result.status == 'failed') {
         dismissLoading();
-        yield LoginFailure(failure: const ServerFailure());
+        yield FetchQRFailure(failure: const ServerFailure());
       } else {
         dismissLoading();
-        yield LoginSuccess(data: result);
+        Navigator.pushNamed(context, ShowQRcodePage.routeName,
+            arguments: result.url);
+        yield FetchQRSuccess(data: result);
       }
     });
   }

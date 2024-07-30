@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_absensi/presentation/pages/login_page.dart';
 import 'package:qr_absensi/presentation/pages/profile_page.dart';
+import 'package:qr_absensi/presentation/pages/show_qrcode_page.dart';
 import 'package:qr_absensi/presentation/providers/home_provider.dart';
 import 'package:qr_absensi/presentation/widgets/custom_dialog_logout.dart';
 import 'package:qr_absensi/presentation/widgets/rounded_button.dart';
@@ -54,36 +55,36 @@ class _HomePageMahasiswaState extends State<HomePageMahasiswa> {
           ],
         ),
         body: Consumer<HomeProvider>(builder: (context, provider, _) {
-          if (provider.isShowQR) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                  child: Text(
-                    'SILAHKAN MELAKUKAN\nSCAN QR CODE  DI BAWAH INI',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: QrImageView(
-                    data: provider.qrCode,
-                    size: 250,
-                    embeddedImageStyle: QrEmbeddedImageStyle(
-                      size: const Size(
-                        100,
-                        100,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
+          // if (provider.isShowQR) {
+          //   return Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Padding(
+          //         padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+          //         child: Text(
+          //           'SILAHKAN MELAKUKAN\nSCAN QR CODE  DI BAWAH INI',
+          //           style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //       SizedBox(
+          //         height: 20,
+          //       ),
+          //       Center(
+          //         child: QrImageView(
+          //           data: provider.qrCode,
+          //           size: 250,
+          //           embeddedImageStyle: QrEmbeddedImageStyle(
+          //             size: const Size(
+          //               100,
+          //               100,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   );
+          // }
           return const GridMenuWidget();
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 50, horizontal: 50),
@@ -127,8 +128,8 @@ class GridMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     List<_MenuItem> menuList = [
       _MenuItem(appLogo, 'QR-Code'),
-      _MenuItem(appLogo, 'Lihat Absensi'),
-      _MenuItem(appLogo, 'Profil'),
+      _MenuItem(absensiIcon, 'Lihat Absensi'),
+      _MenuItem(profileIcon, 'Profil'),
     ];
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
@@ -144,7 +145,11 @@ class GridMenuWidget extends StatelessWidget {
             itemBuilder: (context, position) {
               return GestureDetector(
                 onTap: () {
-                  if (position == 2) {
+                  if (position == 0) {
+                    locator<HomeProvider>()
+                        .fetchQRCode(context)
+                        .listen((event) {});
+                  } else if (position == 2) {
                     Navigator.pushNamed(context, ProfilePage.routeName);
                   }
                 },

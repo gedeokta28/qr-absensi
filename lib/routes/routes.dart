@@ -3,6 +3,7 @@ import 'package:qr_absensi/presentation/pages/home_page_dosen.dart';
 import 'package:qr_absensi/presentation/pages/home_page_mahasiswa.dart';
 import 'package:qr_absensi/presentation/pages/login_page.dart';
 import 'package:qr_absensi/presentation/pages/profile_page.dart';
+import 'package:qr_absensi/presentation/pages/show_qrcode_page.dart';
 import 'package:qr_absensi/presentation/pages/splash_page.dart';
 import 'package:qr_absensi/presentation/pages/sukses_absensi.dart';
 
@@ -20,6 +21,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const SuksesAbsensiPage());
     case ProfilePage.routeName:
       return MaterialPageRoute(builder: (_) => const ProfilePage());
+    case ShowQRcodePage.routeName:
+      final url = settings.arguments as String;
+      return MaterialPageRoute(builder: (_) => ShowQRcodePage(urlQrCode: url));
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:qr_absensi/data/models/login_response_model.dart';
+import 'package:qr_absensi/data/models/qr_code_response_model.dart';
 import 'package:qr_absensi/utility/injection.dart';
 import 'package:qr_absensi/utility/session_helper.dart';
 
 abstract class ApiDataSource {
   Future<LoginResponseModel> doLogin(FormData data);
   Future<bool> doUpdatePassword(FormData data);
+  Future<QRcodeResponseModel> fetchQRcode(FormData data);
 }
 
 class ApiDataSourceImplementation implements ApiDataSource {
@@ -44,6 +46,22 @@ class ApiDataSourceImplementation implements ApiDataSource {
         data: data,
       );
       return response.statusCode == 200;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<QRcodeResponseModel> fetchQRcode(FormData data) async {
+    String url = 'api/generate/qr-siswa';
+
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+      );
+      final model = QRcodeResponseModel.fromJson(response.data);
+      return model;
     } catch (e) {
       rethrow;
     }
