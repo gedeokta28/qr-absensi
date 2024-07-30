@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:qr_absensi/data/models/login_response_model.dart';
+import 'package:qr_absensi/data/models/matkul_response_model.dart';
 import 'package:qr_absensi/data/models/qr_code_response_model.dart';
 import 'package:qr_absensi/utility/injection.dart';
 import 'package:qr_absensi/utility/session_helper.dart';
@@ -8,6 +9,7 @@ abstract class ApiDataSource {
   Future<LoginResponseModel> doLogin(FormData data);
   Future<bool> doUpdatePassword(FormData data);
   Future<QRcodeResponseModel> fetchQRcode(FormData data);
+  Future<MataKuliahResponseModel> fetchMatkul();
 }
 
 class ApiDataSourceImplementation implements ApiDataSource {
@@ -61,6 +63,21 @@ class ApiDataSourceImplementation implements ApiDataSource {
         data: data,
       );
       final model = QRcodeResponseModel.fromJson(response.data);
+      return model;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<MataKuliahResponseModel> fetchMatkul() async {
+    String url = 'api/mata-kuliah';
+
+    try {
+      final response = await dio.get(
+        url,
+      );
+      final model = MataKuliahResponseModel.fromJson(response.data);
       return model;
     } catch (e) {
       rethrow;

@@ -237,9 +237,9 @@ class GridMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<_MenuItem> menuList = [
-      _MenuItem(appLogo, 'QR-Code'),
-      _MenuItem(appLogo, 'Lihat Absensi'),
-      _MenuItem(appLogo, 'Profil'),
+      _MenuItem(appLogo, 'Mulai Absen'),
+      _MenuItem(absensiIcon, 'Daftar Kehadiran'),
+      _MenuItem(profileIcon, 'Profil'),
     ];
     return Padding(
         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
@@ -255,7 +255,11 @@ class GridMenuWidget extends StatelessWidget {
             itemBuilder: (context, position) {
               return GestureDetector(
                 onTap: () {
-                  if (position == 2) {
+                  if (position == 0) {
+                    locator<HomeProvider>()
+                        .fetchMatkul(context)
+                        .listen((event) {});
+                  } else if (position == 2) {
                     Navigator.pushNamed(context, ProfilePage.routeName);
                   }
                 },

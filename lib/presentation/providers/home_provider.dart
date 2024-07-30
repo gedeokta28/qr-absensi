@@ -2,13 +2,14 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_absensi/domain/usecases/do_fetch_matkul.dart';
 import 'package:qr_absensi/domain/usecases/do_fetch_qr.dart';
-import 'package:qr_absensi/domain/usecases/do_login.dart';
 import 'package:qr_absensi/domain/usecases/do_update_password.dart';
+import 'package:qr_absensi/presentation/pages/matkul_page.dart';
 import 'package:qr_absensi/presentation/pages/show_qrcode_page.dart';
 import 'package:qr_absensi/presentation/providers/form_provider.dart';
+import 'package:qr_absensi/presentation/state/fetch_matkul_state.dart';
 import 'package:qr_absensi/presentation/state/fetch_qr_state.dart';
-import 'package:qr_absensi/presentation/state/login_state.dart';
 import 'package:qr_absensi/presentation/state/update_password_state.dart';
 import 'package:qr_absensi/utility/failures.dart';
 import 'package:qr_absensi/utility/helper.dart';
@@ -17,12 +18,13 @@ import 'package:qr_absensi/utility/session_helper.dart';
 
 class HomeProvider extends FormProvider {
   final DoUpdatePassword doUpdatePassword;
+  final DoMatkul doMatkul;
   final DoQrcode doQrcode;
 
-  HomeProvider({
-    required this.doUpdatePassword,
-    required this.doQrcode,
-  });
+  HomeProvider(
+      {required this.doUpdatePassword,
+      required this.doQrcode,
+      required this.doMatkul});
 
   String _qrCode = '';
   bool _isShowQR = false;
@@ -64,6 +66,23 @@ class HomeProvider extends FormProvider {
             arguments: result.url);
         yield FetchQRSuccess(data: result);
       }
+    });
+  }
+
+  Stream<FetchMatkulState> fetchMatkul(BuildContext context) async* {
+    showLoading();
+    yield FetchMatkulLoading();
+
+    final result = await doMatkul.call();
+    yield* result.fold((failure) async* {
+      dismissLoading();
+      yield FetchMatkulFailure(
+          failure: ServerFailure(message: failure.message));
+    }, (result) async* {
+      dismissLoading();
+      Navigator.pushNamed(context, MatkulPage.routeName,
+          arguments: result.data);
+      yield FetchMatkulSuccess(data: result.data);
     });
   }
 
