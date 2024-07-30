@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qr_absensi/presentation/pages/login_page.dart';
+import 'package:qr_absensi/presentation/pages/profile_page.dart';
 import 'package:qr_absensi/presentation/providers/home_provider.dart';
 import 'package:qr_absensi/presentation/widgets/custom_dialog_logout.dart';
+import 'package:qr_absensi/static/assets.dart';
 import 'package:qr_absensi/static/colors.dart';
 import 'package:qr_absensi/utility/helper.dart';
 import 'package:qr_absensi/utility/injection.dart';
@@ -92,6 +94,8 @@ class _HomePageDosenState extends State<HomePageDosen> {
             //   }
             // });
           }
+
+          return const GridMenuWidget();
           return Column(
             children: <Widget>[
               Expanded(flex: 3, child: _buildQrView(context)),
@@ -225,4 +229,63 @@ class _HomePageDosenState extends State<HomePageDosen> {
     controller?.dispose();
     super.dispose();
   }
+}
+
+class GridMenuWidget extends StatelessWidget {
+  const GridMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    List<_MenuItem> menuList = [
+      _MenuItem(appLogo, 'QR-Code'),
+      _MenuItem(appLogo, 'Lihat Absensi'),
+      _MenuItem(appLogo, 'Profil'),
+    ];
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+        child: GridView.builder(
+            itemCount: menuList.length,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 0,
+                mainAxisSpacing: 0,
+                childAspectRatio: 1.1),
+            itemBuilder: (context, position) {
+              return GestureDetector(
+                onTap: () {
+                  if (position == 2) {
+                    Navigator.pushNamed(context, ProfilePage.routeName);
+                  }
+                },
+                child: Column(
+                  children: [
+                    Image.asset(
+                      menuList[position].icon,
+                      width: 80,
+                      height: 80,
+                    ),
+                    const SizedBox(
+                      height: 6.0,
+                    ),
+                    Text(
+                      menuList[position].title,
+                      style: const TextStyle(
+                          fontSize: 15,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              );
+            }));
+  }
+}
+
+class _MenuItem {
+  final String icon;
+  final String title;
+
+  _MenuItem(this.icon, this.title);
 }

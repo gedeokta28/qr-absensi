@@ -1,12 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:qr_absensi/data/models/istilah_response_model.dart';
 import 'package:qr_absensi/data/models/login_response_model.dart';
-import 'package:qr_absensi/data/models/register_response_model.dart';
+import 'package:qr_absensi/utility/injection.dart';
+import 'package:qr_absensi/utility/session_helper.dart';
 
 abstract class ApiDataSource {
   Future<LoginResponseModel> doLogin(FormData data);
-  Future<RegisterResponseModel> doRegister(FormData data);
-  Future<IstilahResponseModel> getDaftarIstilah();
+  Future<bool> doUpdatePassword(FormData data);
 }
 
 class ApiDataSourceImplementation implements ApiDataSource {
@@ -31,31 +30,20 @@ class ApiDataSourceImplementation implements ApiDataSource {
   }
 
   @override
-  Future<RegisterResponseModel> doRegister(FormData data) async {
-    String url = 'register/regis';
-
+  Future<bool> doUpdatePassword(FormData data) async {
+    final session = locator<Session>();
+    String url;
+    if (session.sessionRole == 'siswa') {
+      url = 'api/update-siswa';
+    } else {
+      url = 'api/update-guru';
+    }
     try {
       final response = await dio.post(
         url,
         data: data,
       );
-      final model = RegisterResponseModel.fromJson(response.data);
-      return model;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<IstilahResponseModel> getDaftarIstilah() async {
-    String url = 'Kegiatan/api_kegiatan';
-
-    try {
-      final response = await dio.get(
-        url,
-      );
-      final model = IstilahResponseModel.fromJson(response.data);
-      return model;
+      return response.statusCode == 200;
     } catch (e) {
       rethrow;
     }

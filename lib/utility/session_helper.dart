@@ -6,12 +6,14 @@ abstract class Session {
   set setId(String value);
   set setFullname(String value);
   set setUsername(String value);
+  set setNoHp(String value);
   set setRole(String value);
 
   bool get isLoggedIn;
   String get sessionId;
   String get sessionFullname;
   String get sessionUsername;
+  String get sessionNoHp;
   String get sessionRole;
   Future<void> clearSession();
 }
@@ -47,6 +49,11 @@ class SessionHelper implements Session {
   }
 
   @override
+  set setNoHp(String value) {
+    pref.setString(strNoHp, value);
+  }
+
+  @override
   bool get isLoggedIn => pref.getBool(strIsLoggedIn) ?? false;
 
   @override
@@ -60,6 +67,9 @@ class SessionHelper implements Session {
 
   @override
   String get sessionUsername => pref.getString(strUsername) ?? '';
+
+  @override
+  String get sessionNoHp => pref.getString(strNoHp) ?? '';
 
   @override
   Future<void> clearSession() async {

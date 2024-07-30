@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_absensi/presentation/pages/home_page_dosen.dart';
 import 'package:qr_absensi/presentation/pages/home_page_mahasiswa.dart';
 import 'package:qr_absensi/presentation/pages/login_page.dart';
+import 'package:qr_absensi/presentation/pages/profile_page.dart';
 import 'package:qr_absensi/presentation/pages/splash_page.dart';
 import 'package:qr_absensi/presentation/pages/sukses_absensi.dart';
 
@@ -17,6 +18,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const HomePageMahasiswa());
     case SuksesAbsensiPage.routeName:
       return MaterialPageRoute(builder: (_) => const SuksesAbsensiPage());
+    case ProfilePage.routeName:
+      return MaterialPageRoute(builder: (_) => const ProfilePage());
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

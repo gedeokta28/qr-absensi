@@ -31,9 +31,10 @@ class LoginProvider extends FormProvider {
       } else {
         session.setLoggedIn = true;
         session.setRole = result.role!;
-        // session.setId = result.data!.id;
-        // session.setUsername = result.data!.username;
-        // session.setFullname = result.data!.fullname;
+        session.setId = result.data!.id;
+        session.setUsername = result.data!.userId;
+        session.setFullname = result.data!.nama;
+        session.setNoHp = result.data!.noHp;
         dismissLoading();
         yield LoginSuccess(data: result);
       }

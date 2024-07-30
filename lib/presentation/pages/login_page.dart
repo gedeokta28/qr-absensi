@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_absensi/presentation/pages/home_page_dosen.dart';
 import 'package:qr_absensi/presentation/pages/home_page_mahasiswa.dart';
+import 'package:qr_absensi/presentation/pages/profile_page.dart';
 import 'package:qr_absensi/presentation/providers/login_provider.dart';
 import 'package:qr_absensi/presentation/state/login_state.dart';
 import 'package:qr_absensi/presentation/widgets/custom_simple_dialog.dart';
@@ -151,6 +152,9 @@ class LoginPage extends StatelessWidget {
                                                     false);
                                       }
                                       showShortToast(message: "Login Sukses");
+                                      Navigator.pushNamed(
+                                          context, ProfilePage.routeName);
+
                                       break;
                                   }
                                 });

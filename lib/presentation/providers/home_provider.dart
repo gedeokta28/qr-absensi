@@ -2,16 +2,20 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:qr_absensi/domain/usecases/do_login.dart';
-import 'package:qr_absensi/domain/usecases/get_istilah.dart';
+import 'package:qr_absensi/domain/usecases/do_update_password.dart';
 import 'package:qr_absensi/presentation/providers/form_provider.dart';
 import 'package:qr_absensi/presentation/state/login_state.dart';
+import 'package:qr_absensi/presentation/state/update_password_state.dart';
 import 'package:qr_absensi/utility/failures.dart';
 import 'package:qr_absensi/utility/helper.dart';
+import 'package:qr_absensi/utility/injection.dart';
+import 'package:qr_absensi/utility/session_helper.dart';
 
 class HomeProvider extends FormProvider {
   final DoLogin doLogin;
+  final DoUpdatePassword doUpdatePassword;
 
-  HomeProvider({required this.doLogin});
+  HomeProvider({required this.doUpdatePassword, required this.doLogin});
 
   String _qrCode = '';
   bool _isShowQR = false;
@@ -50,6 +54,40 @@ class HomeProvider extends FormProvider {
       } else {
         dismissLoading();
         yield LoginSuccess(data: result);
+      }
+    });
+  }
+
+  setProfileData() async {
+    final session = locator<Session>();
+    usernameController.text = session.sessionUsername;
+    noHpController.text = session.sessionNoHp;
+    fullNameController.text = session.sessionFullname;
+    notifyListeners();
+  }
+
+  Stream<UpdatePasswordState> doUpdatePwApi() async* {
+    final session = locator<Session>();
+    showLoading();
+    yield UpdatePasswordLoading();
+    FormData formData = FormData.fromMap({
+      'id': session.sessionId,
+      'no_hp': noHpController.text,
+      'password': passwordController.text
+    });
+
+    final result = await doUpdatePassword.call(formData);
+    yield* result.fold((failure) async* {
+      dismissLoading();
+      yield UpdatePasswordFailure(
+          failure: ServerFailure(message: failure.message));
+    }, (result) async* {
+      if (result) {
+        dismissLoading();
+        yield UpdatePasswordSuccess(data: result);
+      } else {
+        dismissLoading();
+        yield UpdatePasswordFailure(failure: const ServerFailure());
       }
     });
   }
