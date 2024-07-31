@@ -3,13 +3,16 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_absensi/domain/usecases/do_absen.dart';
+import 'package:qr_absensi/domain/usecases/do_fetch_absensi.dart';
 import 'package:qr_absensi/domain/usecases/do_fetch_matkul.dart';
 import 'package:qr_absensi/domain/usecases/do_fetch_qr.dart';
 import 'package:qr_absensi/domain/usecases/do_update_password.dart';
+import 'package:qr_absensi/presentation/pages/absensi_mahasiswa.dart';
 import 'package:qr_absensi/presentation/pages/matkul_page.dart';
 import 'package:qr_absensi/presentation/pages/show_qrcode_page.dart';
 import 'package:qr_absensi/presentation/providers/form_provider.dart';
 import 'package:qr_absensi/presentation/state/absen_state.dart';
+import 'package:qr_absensi/presentation/state/fetch_absensi_state.dart';
 import 'package:qr_absensi/presentation/state/fetch_matkul_state.dart';
 import 'package:qr_absensi/presentation/state/fetch_qr_state.dart';
 import 'package:qr_absensi/presentation/state/update_password_state.dart';
@@ -23,11 +26,13 @@ class HomeProvider extends FormProvider {
   final DoMatkul doMatkul;
   final DoQrcode doQrcode;
   final DoAbsen doAbsen;
+  final DoAbsensiList doAbsensiList;
 
   HomeProvider(
       {required this.doUpdatePassword,
       required this.doQrcode,
       required this.doAbsen,
+      required this.doAbsensiList,
       required this.doMatkul});
 
   String _qrCode = '';
@@ -144,6 +149,25 @@ class HomeProvider extends FormProvider {
     }, (result) async* {
       dismissLoading();
       yield AbsenSuccess(data: result);
+    });
+  }
+
+  Stream<FetchAbsensiState> fetchAbsensiAPI(BuildContext context) async* {
+    final session = locator<Session>();
+    showLoading();
+    yield FetchAbsensiLoading();
+
+    final result = await doAbsensiList.call(session.sessionId);
+    yield* result.fold((failure) async* {
+      dismissLoading();
+      showShortToast(message: 'Belum Ada Absensi');
+      yield FetchAbsensiFailure(
+          failure: ServerFailure(message: failure.message));
+    }, (result) async* {
+      dismissLoading();
+      Navigator.pushNamed(context, AbsensiMahasiswa.routeName,
+          arguments: result.data);
+      yield FetchAbsensiSuccess(data: result.data);
     });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_absensi/presentation/pages/splash_page.dart';
 import 'package:qr_absensi/routes/routes.dart';
 import 'package:qr_absensi/utility/helper.dart';
@@ -10,7 +11,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await init();
-
+    await initializeDateFormatting('id_ID', null);
     locator.isReady<Session>().then((_) async {
       runApp(const MyApp());
     });

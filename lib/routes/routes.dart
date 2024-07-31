@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:qr_absensi/data/models/absensi_list_response_model.dart';
 import 'package:qr_absensi/data/models/matkul_response_model.dart';
 import 'package:qr_absensi/presentation/pages/absen_page.dart';
+import 'package:qr_absensi/presentation/pages/absensi_mahasiswa.dart';
 import 'package:qr_absensi/presentation/pages/home_page_dosen.dart';
 import 'package:qr_absensi/presentation/pages/home_page_mahasiswa.dart';
 import 'package:qr_absensi/presentation/pages/login_page.dart';
@@ -34,6 +36,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AbsenPage.routeName:
       final idMatkul = settings.arguments as String;
       return MaterialPageRoute(builder: (_) => AbsenPage(idMatkul: idMatkul));
+    case AbsensiMahasiswa.routeName:
+      final list = settings.arguments as List<AbsensiListItem>;
+      return MaterialPageRoute(
+          builder: (_) => AbsensiMahasiswa(absensiList: list));
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(

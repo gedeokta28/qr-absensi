@@ -259,6 +259,10 @@ class GridMenuWidget extends StatelessWidget {
                     locator<HomeProvider>()
                         .fetchMatkul(context)
                         .listen((event) {});
+                  } else if (position == 1) {
+                    locator<HomeProvider>()
+                        .fetchAbsensiAPI(context)
+                        .listen((event) {});
                   } else if (position == 2) {
                     Navigator.pushNamed(context, ProfilePage.routeName);
                   }
