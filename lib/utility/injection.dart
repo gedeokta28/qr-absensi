@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:qr_absensi/data/datasources/api_data_source.dart';
 import 'package:qr_absensi/data/repositories/api_repo_impl.dart';
 import 'package:qr_absensi/domain/repositories/api_repository.dart';
+import 'package:qr_absensi/domain/usecases/do_absen.dart';
 import 'package:qr_absensi/domain/usecases/do_fetch_matkul.dart';
 import 'package:qr_absensi/domain/usecases/do_fetch_qr.dart';
 import 'package:qr_absensi/domain/usecases/do_login.dart';
@@ -43,10 +44,14 @@ Future<void> init() async {
       () => DoUpdatePassword(repository: locator(), session: locator()));
   locator
       .registerLazySingleton<DoMatkul>(() => DoMatkul(repository: locator()));
+  locator.registerLazySingleton<DoAbsen>(() => DoAbsen(repository: locator()));
 
   //Providers
   locator
       .registerFactory<LoginProvider>(() => LoginProvider(doLogin: locator()));
   locator.registerFactory<HomeProvider>(() => HomeProvider(
-      doQrcode: locator(), doUpdatePassword: locator(), doMatkul: locator()));
+      doQrcode: locator(),
+      doAbsen: locator(),
+      doUpdatePassword: locator(),
+      doMatkul: locator()));
 }

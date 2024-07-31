@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_absensi/data/models/matkul_response_model.dart';
+import 'package:qr_absensi/presentation/pages/absen_page.dart';
 import 'package:qr_absensi/presentation/widgets/custom_search_bar.dart';
 import 'package:qr_absensi/static/colors.dart';
 
@@ -77,6 +78,8 @@ class _MatkulPageState extends State<MatkulPage> {
                         key: ValueKey(_foundMatkul[index].idMataKuliah),
                         onTap: () {
                           FocusScope.of(context).unfocus();
+                          Navigator.pushNamed(context, AbsenPage.routeName,
+                              arguments: _foundMatkul[index].idMataKuliah);
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

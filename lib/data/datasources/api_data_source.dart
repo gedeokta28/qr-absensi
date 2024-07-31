@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:qr_absensi/data/models/absen_response_model.dart';
 import 'package:qr_absensi/data/models/login_response_model.dart';
 import 'package:qr_absensi/data/models/matkul_response_model.dart';
 import 'package:qr_absensi/data/models/qr_code_response_model.dart';
+import 'package:qr_absensi/utility/helper.dart';
 import 'package:qr_absensi/utility/injection.dart';
 import 'package:qr_absensi/utility/session_helper.dart';
 
@@ -10,6 +12,7 @@ abstract class ApiDataSource {
   Future<bool> doUpdatePassword(FormData data);
   Future<QRcodeResponseModel> fetchQRcode(FormData data);
   Future<MataKuliahResponseModel> fetchMatkul();
+  Future<AbsenResponseModel> doAbsen(FormData data);
 }
 
 class ApiDataSourceImplementation implements ApiDataSource {
@@ -80,6 +83,23 @@ class ApiDataSourceImplementation implements ApiDataSource {
       final model = MataKuliahResponseModel.fromJson(response.data);
       return model;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<AbsenResponseModel> doAbsen(FormData data) async {
+    String url = 'api/absen';
+
+    try {
+      final response = await dio.post(
+        url,
+        data: data,
+      );
+      final model = AbsenResponseModel.fromJson(response.data);
+      return model;
+    } catch (e) {
+      dismissLoading();
       rethrow;
     }
   }

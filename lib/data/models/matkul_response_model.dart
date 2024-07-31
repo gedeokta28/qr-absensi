@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-MataKuliahResponseModel istilahResponseModelFromJson(String str) =>
+MataKuliahResponseModel matakuliahResponseModelFromJson(String str) =>
     MataKuliahResponseModel.fromJson(json.decode(str));
 
-String istilahResponseModelToJson(MataKuliahResponseModel data) =>
+String matakuliahResponseModelToJson(MataKuliahResponseModel data) =>
     json.encode(data.toJson());
 
 class MataKuliahResponseModel {
